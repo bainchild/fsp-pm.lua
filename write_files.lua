@@ -58,7 +58,7 @@ end
 local function readlink(a,base)
 	local r,s = popen("readlink '"..a.."'")
 	if s==0 then return r end
-	local r = popen("find "..base.." -inum "..inode(a))
+	r=popen("find "..base.." -inum "..inode(a))
 	r=split(r,"\n")
 	if #r~=0 then
 		for i,v in pairs(r) do
@@ -94,23 +94,26 @@ elseif path~="--help" and path~="-h" then
 else
 	usage(0)
 end
+if not exists(path.."/extra") then
+	 os.execute("mkdir '"..path.."/extra'")
+end
 
-if exists(path.."/pm") then
-	if realpath(path.."/pm")~=realpath(script_dir) then
-		move(path.."/pm",path.."pm.old")
-		copy(script_dir,path.."/pm")
+if exists(path.."/extra/pm") then
+	if realpath(path.."/extra/pm")~=realpath(script_dir) then
+		move(path.."/extra/pm",path.."/extra/pm.old")
+		copy(script_dir,path.."/extra/pm")
 	end
 else
-	copy(script_dir,path.."/pm")
+	copy(script_dir,path.."/extra/pm")
 end
 if exists(path.."/preload/pm") then
 	if realpath(readlink(path.."/preload/pm",path))~=path.."/pm/init.lua" then
 		if exists(path.."/preload/pm.old") then remove(path.."/preload/pm.old") end
 		move(path.."/preload/pm",path.."/preload/pm.old")
-		link(path.."/pm/init.lua",path.."/preload/pm")
+		link(path.."/extra/pm/init.lua",path.."/preload/pm")
 	end
 else
-	link(path.."/pm/init.lua",path.."/preload/pm")
+	link(path.."/extra/pm/init.lua",path.."/preload/pm")
 end
 
 print("Successful!")

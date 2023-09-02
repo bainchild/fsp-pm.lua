@@ -1,1 +1,1 @@
-error('TODO: lua5.1_jit support');
+error("TODO: lua5.1_jit support.")
