@@ -43,7 +43,7 @@ local function dfcml_populate(flag,result)
       if used[m]==nil then result[m]=true end
    end
 end
--- todo: persistance with _P[PR]*
+-- todo: variable persistance
 local _PARAMS,_PPARAMS,_RTPARAMS,_PRTPARAMS={},{},{},{}
 do
    local realparams,prealparams,metaparams,pmetaparams = {},{},{},{}
@@ -57,6 +57,8 @@ do
 end
 outputLuaTemplate("local _PARAMS,_PPARAMS=?,?\n",_RTPARAMS,_PRTPARAMS)
 )
+local custom_require,get_resource,platform,env
+local require=require
 if PM == nil then
    local setfenv, loadstring, assert, game = setfenv, loadstring, assert, game
    !if not (_PPARAMS.PM_FORCESILENCE or _PARAMS.PM_ENTRYSILENCE) then
@@ -79,6 +81,7 @@ if PM == nil then
    local printfm = function()end
    !end
    printfm("Initializing...")
+   -- todo: improve environment detection
    if game ~= nil and Instance ~= nil and typeof ~= nil --[[and _VERSION == "Luau"]] then
       env = "Roblox"
    elseif os~=nil and os.pullEvent~=nil and term~=nil and colors~=nil and peripheral~=nil then
@@ -276,7 +279,7 @@ else
    PM_G = PM._G
    env = PM.env
 end
-platform = PM.platform
+local platform = PM.platform
 setfenv(1,PM_G)
 --[[--!>
 <script>
